@@ -20,6 +20,7 @@ from keras.layers.wrappers import TimeDistributed
 from keras.layers.convolutional import (Conv2D, MaxPooling3D, Conv3D,MaxPooling2D)
 from collections import deque
 from sequenceextractor import SequenceExtractor
+from modelloader import ResearchModels
 
 TESTTING_IMAGE_PATH = "./Output/"
 SEQ = 50
@@ -52,17 +53,7 @@ confidenceBoundary = 0.95
 net = cv2.dnn.readNetFromCaffe(protoPath, modelPath)
 outputFolder = "./Output/"
 
-def createModel():
-    model = Sequential()
-    model.add(LSTM(2048, return_sequences=True, input_shape=(50, 2048),dropout=0.5))
-    model.add(Flatten())
-    model.add(Dense(1024, activation='relu'))
-    model.add(Dense(512, activation='relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(2, activation='softmax'))
-    return model
-model = createModel()
-model.load_weights(WEIGHT_PATH)
+model = ResearchModels(2, 50, input_shape=(50, 2048)).loadModelFromPath(WEIGHT_PATH)
 
 extractor = SequenceExtractor(SEQ)
 
